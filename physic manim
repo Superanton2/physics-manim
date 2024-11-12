@@ -1,0 +1,391 @@
+from manim import * 
+
+class OpeningManim(Scene):
+    def construct(self):
+
+        # текст для послідовного зєднання 
+        titles = Tex("serial connection")
+        titles.to_corner(DOWN + RIGHT)
+        titles.scale(2)
+
+        # текст для паралельного зєднання 
+        titlep = Tex("parallel connection")
+        titlep.to_corner(DOWN + RIGHT)
+        titlep.scale(2)
+
+
+# Сцена 1 ( послід ) 
+
+        # Створити три резистори
+        rect3 = Rectangle(width=2, height=1)
+        rect4 = Rectangle(width=2, height=1)
+        rect5 = Rectangle(width=2, height=1)
+
+        rect3.shift(LEFT * 4)
+        rect4.shift(ORIGIN)
+        rect5.shift(RIGHT * 4)
+
+        rect_group3_5 = VGroup(rect3, rect4, rect5)
+
+
+        self.play(
+            Create(rect_group3_5, run_time=2),
+        )
+
+        # Зʼєднати їх проводами
+        line3_4 = Line(rect3.get_right(), rect4.get_left())
+        line4_5 = Line(rect4.get_right(), rect5.get_left())
+
+        line_group3_5 = VGroup(line3_4, line4_5)
+
+
+        self.play(
+            Create(line_group3_5, run_time=1),
+        )
+
+        # Написати текст serial con
+        self.play(
+            Write(titles),
+        )
+
+
+
+# Сцена 2 ( послід - блок 1 )
+
+        # Зменшити транзистори і провода
+        scene2_group = VGroup(rect_group3_5, line_group3_5)
+        self.play(
+            ScaleInPlace(scene2_group, 0.5)
+        )
+        
+        # Забрати текст 
+        self.play(
+            FadeOut(titles, shift=DOWN)
+        )
+        
+        # створити блок 1
+        rectB1 = Rectangle(width=6, height=4)
+        self.play(
+            Create(rectB1, run_time=2),
+        )  
+
+        # Прибрати три резистори
+        self.play(
+            FadeOut(rect_group3_5, line_group3_5)
+        )
+
+        # написати В1 і написати block 1
+        title2 = Tex("block 1")
+        title2.to_corner(DOWN + RIGHT)
+        title2.scale(2)
+        titleB1 = Tex("B1")
+        titleB1.scale(3)
+
+        self.play(
+            Write(title2),
+            Write(titleB1),
+        )
+
+
+
+# Сцена 3 ( блок 1 - паралел )
+        
+        # Змістити і зменшити блок 1
+        self.play(
+            rectB1.animate.scale(0.5).move_to(UP*2.5),
+            titleB1.animate.scale(0.5).move_to(UP*2.5),
+        )
+
+        # Створити провода і резистор 
+
+        rect6 = Rectangle(width=2, height=1)
+        rect6.shift(DOWN * 2.5)
+        
+        dot3 = Dot(point=LEFT * 3 + UP * 2.5,radius=0.01)
+        dot4 = Dot(point=LEFT * 3 + DOWN * 2.5,radius=0.01)
+        dot5 = Dot(point=RIGHT * 3 + UP * 2.5,radius=0.01)
+        dot6 = Dot(point=RIGHT * 3 + DOWN * 2.5,radius=0.01)
+
+        line3 = Line(start=dot3, end=dot4)
+        line4 = Line(start=dot5, end=dot6)
+        line5 = Line(dot3.get_right(), rectB1.get_left())   
+        line6 = Line(rectB1.get_right(), dot5.get_left())       
+        line7 = Line(dot4.get_right(), rect6.get_left()) 
+        line8 = Line(rect6.get_right(), dot6.get_left()) 
+
+        wire_group = VGroup(line3, line4, line5, line6, line7, line8)
+        self.play(
+            Create(wire_group),
+            Create(rect6),
+        )
+
+        # Прибрати block 1 і Створити зовн зʼєднання 
+        dot1 = Dot(point=LEFT * 3, radius=0.16)
+        dot2 = Dot(point=RIGHT * 3, radius=0.16)
+        dot7 = Dot(point=LEFT * 5,radius=0.01)
+        dot8 = Dot(point=RIGHT * 5,radius=0.01)
+
+        Line9 = Line(start=dot1, end=dot7)
+        Line10 = Line(start=dot2, end=dot8)
+        
+        ext_wire_group = VGroup(dot1, dot2, Line9, Line10)
+
+        self.play(
+            FadeOut(title2, shift=DOWN),
+            Create(ext_wire_group),
+        )
+        
+        # Написати parallel con
+        self.play(
+            Write(titlep)
+        )
+
+
+
+# Сцена 4 ( паралел - блок 2 )
+
+        # Зменшити блок 1 і зʼєднання
+        scene3_group = VGroup(wire_group, ext_wire_group, rectB1, titleB1, rect6)
+        self.play(
+            ScaleInPlace(scene3_group, 0.5)
+        )
+
+        # Прибрати текст parallel con
+        self.play(
+            FadeOut(titlep, shift=DOWN)
+        )
+
+        # Створити блок 2 
+        rectB2 = Rectangle(width=6, height=4)
+        self.play(
+            Create(rectB2, run_time=2),
+        )  
+
+        # Прибрати блок 1 і зʼєднання
+        self.play(
+            FadeOut(scene3_group)
+        )
+
+        # Написати B2 і block 2 
+        title4 = Tex("block 2")
+        title4.to_corner(DOWN + RIGHT)
+        title4.scale(2)
+        titleB2 = Tex("B2")
+        titleB2.scale(3)
+        
+        self.play(
+            Write(titleB2),
+            Write(title4) 
+        )
+
+
+
+# Сцена 5 ( блок 2 - послід ) 
+
+        # Зменшити і змістити блок 2 і B2
+        self.play(
+            rectB2.animate.scale(0.5).move_to(RIGHT*2.5),
+            titleB2.animate.scale(0.5).move_to(RIGHT*2.5),
+        )
+
+        # Забрати block 2
+        self.play(
+            FadeOut(title4, shift=DOWN)
+        )
+        
+        # Створити резистор і зʼєднання
+        rect2 = Rectangle(width=2, height=1)
+        rect2.shift(LEFT * 2.5)
+        line2_B2 = Line(rect2.get_right(), rectB2.get_left())
+        scene5_group = VGroup(rectB2, titleB2, rect2, line2_B2)
+
+        self.play(
+            Create(rect2),
+            Create(line2_B2)
+        )
+
+        # Написати serial con
+        self.play(
+            Write(titles),
+        )
+
+
+
+
+
+
+# Сцена 6 ( послід - блок 3 )
+
+        # Зменшити блок 2 і зʼєднання 
+        self.play(
+            scene5_group.animate.scale(0.5),
+        )
+
+        # Забрати текст serial con
+        self.play(
+            FadeOut(titles, shift=DOWN)
+        )
+
+        # Створити блок 3 
+        rectB3= Rectangle(width=6, height=4)
+        self.play(
+            Create(rectB3)
+        )        
+        
+        # Прибрати блок 2 і зʼєднання
+        self.play(
+            FadeOut(scene5_group)
+        )      
+
+        # Написати B3 і block 3
+        title5 = Tex("block 3")
+        title5.to_corner(DOWN + RIGHT)
+        title5.scale(2)
+        titleB3 = Tex("B3")
+        titleB3.scale(3)
+
+        self.play(
+            Write(titleB3),
+            Write(title5) 
+        )
+
+
+
+# Сцена 7 ( блок 3 - паралел ) 
+
+        # Зменшення і зміщення блоку 3
+        self.play(
+            rectB3.animate.scale(0.5).move_to(UP*2.5),
+            titleB3.animate.scale(0.5).move_to(UP*2.5),
+        )
+
+        # Створити провода і резистор
+        rect7 = Rectangle(width=2, height=1)
+        rect7.shift(DOWN * 2.5)
+        
+        dot9 = Dot(point=LEFT * 3 + UP * 2.5,radius=0.01)
+        dot10 = Dot(point=LEFT * 3 + DOWN * 2.5,radius=0.01)
+        dot11 = Dot(point=RIGHT * 3 + UP * 2.5,radius=0.01)
+        dot12 = Dot(point=RIGHT * 3 + DOWN * 2.5,radius=0.01)
+
+        line9 = Line(start=dot9, end=dot10)
+        line10 = Line(start=dot11, end=dot12)
+        line11= Line(dot9.get_right(), rectB3.get_left())   
+        line12 = Line(rectB3.get_right(), dot11.get_left())       
+        line13 = Line(dot10.get_right(), rect7.get_left()) 
+        line14 = Line(rect7.get_right(), dot12.get_left()) 
+
+        wire_group_2 = VGroup(line9, line10, line11, line12, line13, line14)
+        self.play(
+            Create(wire_group_2),
+            Create(rect7),
+        )
+
+        # Прибрати блок 3 і створити зовн зʼєднання
+        dot15 = Dot(point=LEFT * 3, radius=0.16)
+        dot16 = Dot(point=RIGHT * 3, radius=0.16)
+        dot17 = Dot(point=LEFT * 5,radius=0.01)
+        dot18 = Dot(point=RIGHT * 5,radius=0.01)
+
+        Line15 = Line(start=dot15, end=dot17)
+        Line16 = Line(start=dot16, end=dot18)
+        
+        ext_wire_group_2 = VGroup(dot15, dot16, Line15, Line16)
+
+        self.play(
+            FadeOut(title5, shift=DOWN),
+            Create(ext_wire_group_2),
+        )
+
+        # Написати parallel con
+        self.play(
+            Write(titlep)
+        )
+
+
+
+# Сцена 8 ( паралел - блок 4 )
+
+        # Зменшити блок 3 і зʼєднання 
+        scene7_group = VGroup(wire_group_2, ext_wire_group_2, rectB3, titleB3, rect7)
+        self.play(
+            ScaleInPlace(scene7_group, 0.5)
+        )
+
+        # Прибрати текст parallel con
+        self.play(
+            FadeOut(titlep, shift=DOWN)
+        )
+
+        # Створити блок 4 
+        rectB4 = Rectangle(width=6, height=4)
+        self.play(
+            Create(rectB4, run_time=2),
+        )  
+
+        # Прибрати блок 3 і зʼєднання 
+        self.play(
+            FadeOut(scene7_group)
+        )
+
+        # Написати B4 і block 4
+        title6 = Tex("block 4")
+        title6.to_corner(DOWN + RIGHT)
+        title6.scale(2)
+        titleB4 = Tex("B4")
+        titleB4.scale(3)
+        
+        self.play(
+            Write(titleB4),
+            Write(title6) 
+        )
+
+
+
+# Сцена 9 ( блок 4 - послід ) 
+
+        # Зменшити блок 4 
+        self.play(
+            rectB4.animate.scale(0.5),
+            titleB4.animate.scale(0.5),
+        )
+
+        # Забрати текст block 4
+        self.play(
+            FadeOut(title6, shift=DOWN)
+        )
+
+        # Створити два резистори 
+
+        rect1 = Rectangle(width=2, height=1)
+        rect8 = Rectangle(width=2, height=1)
+        rect1.shift(LEFT * 4)
+        rect8.shift(RIGHT * 4)
+
+        rect_group1_8 = VGroup(rect1, rect8)
+
+
+        self.play(
+            Create(rect_group1_8, run_time=2),
+        )
+
+        # Зʼєднати їх проводами
+        line1_B4 = Line(rect1.get_right(), rectB4.get_left())
+        lineB4_8 = Line(rectB4.get_right(), rect8.get_left())
+
+        line_group1_8 = VGroup(line1_B4, lineB4_8)
+
+
+        self.play(
+            Create(line_group1_8, run_time=1),
+        )
+
+
+        # Написати serial con        
+        self.play(
+            Write(titles)
+        )
+        
+
+        self.wait(5) 
+        
